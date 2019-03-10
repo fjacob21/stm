@@ -1,4 +1,4 @@
-class stops(object):
+class frequencies(object):
     
     def __init__(self, filename):
         self._filename = filename
@@ -9,19 +9,19 @@ class stops(object):
             d = f.read()
             lines = d.split('\n')
         fields = lines[0].split(',')
-        self._stops = {}
+        self._frequencies = []
         for l in lines[1:]:
             if l:
                 record = l.split(',')
-                s = stop(fields, record)
-                self._stops[s.stop_id] = s
+                f = frequencie(fields, record)
+                self._frequencies.append(f)
     
     @property
-    def stops(self):
-        return self._stops
+    def frequencies(self):
+        return self._frequencies
             
         
-class stop(object):
+class frequencie(object):
     
     def __init__(self, fields, record):
         self._fields = fields

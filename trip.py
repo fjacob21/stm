@@ -37,7 +37,13 @@ class trip(object):
             self._values[field] = value
 
     def __repr__(self):
-        return self.trip_id + ' - ' + self.route_id
+        result = ''
+        for f in self._fields:
+            result += f + ':' + getattr(self, f) + ', '
+        return result[:-2]
     
     def __str__(self):
-        return self.trip_id + ' - ' + self.route_id
+        result = ''
+        for f in self._fields:
+            result += f + ':' + getattr(self, f) + ', '
+        return result[:-2]

@@ -1,4 +1,4 @@
-class stops(object):
+class calendar_dates(object):
     
     def __init__(self, filename):
         self._filename = filename
@@ -9,19 +9,19 @@ class stops(object):
             d = f.read()
             lines = d.split('\n')
         fields = lines[0].split(',')
-        self._stops = {}
+        self._calendar_dates = []
         for l in lines[1:]:
             if l:
                 record = l.split(',')
-                s = stop(fields, record)
-                self._stops[s.stop_id] = s
+                c = calendar_date(fields, record)
+                self._calendar_dates.append(c)
     
     @property
-    def stops(self):
-        return self._stops
+    def calendar_dates(self):
+        return self._calendar_dates
             
         
-class stop(object):
+class calendar_date(object):
     
     def __init__(self, fields, record):
         self._fields = fields

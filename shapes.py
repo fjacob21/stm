@@ -1,4 +1,4 @@
-class stops(object):
+class shapes(object):
     
     def __init__(self, filename):
         self._filename = filename
@@ -9,19 +9,21 @@ class stops(object):
             d = f.read()
             lines = d.split('\n')
         fields = lines[0].split(',')
-        self._stops = {}
+        self._shapes = {}
         for l in lines[1:]:
             if l:
                 record = l.split(',')
-                s = stop(fields, record)
-                self._stops[s.stop_id] = s
+                f = shape(fields, record)
+                if f.shape_id not in self._shapes:
+                    self._shapes[f.shape_id] = []
+                self._shapes[f.shape_id].append(f)
     
     @property
-    def stops(self):
-        return self._stops
+    def shapes(self):
+        return self._shapes
             
         
-class stop(object):
+class shape(object):
     
     def __init__(self, fields, record):
         self._fields = fields

@@ -1,6 +1,6 @@
-from dateutils import parse_date
+from dateutils import split_time
 
-class calendars(object):
+class stop_times(object):
     
     def __init__(self, filename):
         self._filename = filename
@@ -11,21 +11,32 @@ class calendars(object):
             d = f.read()
             lines = d.split('\n')
         fields = lines[0].split(',')
-        self._calendars = {}
+        self._stop_times = {}
         for l in lines[1:]:
             if l:
                 record = l.split(',')
-                c = calendar(fields, record)
-                self._calendars[c.service_id] = c
+                st = stop_time(fields, record)
+                if st.trip_id not in self._stop_times:
+                    self._stop_times[st.trip_id] = []
+                self._stop_times[st.trip_id].append(st)
+        for st in self._stop_times:
+            self._stop_times[st] = sorted(self._stop_times[st], key=lambda k: k.stop_sequence)
     
+    def get_stop(self, trip_id, sequence):
+        if trip_id not in self._stop_times:
+            return None
+        st = self._stop_times[trip_id]
+        for s in st:
+            if int(s.stop_sequence) == sequence:
+                return s
+        return None
+
     @property
-    def calendars(self):
-        return self._calendars
+    def stop_times(self):
+        return self._stop_times
             
         
-class calendar(object):
-    
-    DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+class stop_time(object):
     
     def __init__(self, fields, record):
         self._fields = fields
@@ -39,14 +50,9 @@ class calendar(object):
             field = self._fields[i]
             self.__dict__[field] = value
             self._values[field] = value
-        self.start_date = parse_date(self.start_date)
-        self.end_date = parse_date(self.end_date)
-        self.week = {}
-        for d in calendar.DAYS:
-            val = getattr(self, d) == '1'
-            setattr(self, d, val)
-            self.week[d] = val 
-        
+        self.arrival_time = split_time(self.arrival_time)
+        self.departure_time	= split_time(self.departure_time)
+        self.stop_sequence	= int(self.stop_sequence)
 
     def __repr__(self):
         result = ''

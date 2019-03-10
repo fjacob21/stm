@@ -1,4 +1,4 @@
-class stops(object):
+class fare_attributes(object):
     
     def __init__(self, filename):
         self._filename = filename
@@ -9,19 +9,19 @@ class stops(object):
             d = f.read()
             lines = d.split('\n')
         fields = lines[0].split(',')
-        self._stops = {}
+        self._fare_attributes = []
         for l in lines[1:]:
             if l:
                 record = l.split(',')
-                s = stop(fields, record)
-                self._stops[s.stop_id] = s
+                f = fare_attribute(fields, record)
+                self._fare_attributes.append(f)
     
     @property
-    def stops(self):
-        return self._stops
+    def fare_attributes(self):
+        return self._fare_attributes
             
         
-class stop(object):
+class fare_attribute(object):
     
     def __init__(self, fields, record):
         self._fields = fields
